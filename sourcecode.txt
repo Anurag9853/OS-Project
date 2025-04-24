@@ -1,0 +1,114 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+class VulnerabilityDetector {
+    vector<string> vulnerabilities;
+    string suggestions;
+
+public:
+    void menu() {
+        int choice;
+        while (true) {
+            cout << "\n=== Security Vulnerability Detection ===\n";
+            cout << "1. Buffer Overflow Check\n";
+            cout << "2. Trapdoor Detection\n";
+            cout << "3. Command Injection Check\n";
+            cout << "4. Weak Password Check\n";
+            cout << "5. Show Results\n";
+            cout << "0. Exit\n";
+            cout << "Enter your choice: ";
+            cin >> choice;
+            cin.ignore();
+
+            if (choice == 0) break;
+
+            switch (choice) {
+                case 1: bufferOverflowTest(); break;
+                case 2: trapdoorTest(); break;
+                case 3: commandInjectionTest(); break;
+                case 4: passwordTest(); break;
+                case 5: printResults(); break;
+                default: cout << "Invalid choice. Try again.\n";
+            }
+        }
+    }
+
+    void bufferOverflowTest() {
+        int bufferSize;
+        string input;
+        cout << "\n[Buffer Overflow Test]\n";
+        cout << "Enter buffer size: ";
+        cin >> bufferSize;
+        cin.ignore();
+        cout << "Enter test string: ";
+        getline(cin, input);
+
+        if (input.length() > bufferSize) {
+            vulnerabilities.push_back("Buffer overflow detected!");
+            suggestions += "- Use safe string handling like std::string.\n";
+        } else {
+            cout << "✅ No buffer overflow detected.\n";
+        }
+    }
+
+    void trapdoorTest() {
+        string code;
+        cout << "\n[Trapdoor Detection]\nPaste code or string: ";
+        getline(cin, code);
+
+        if (code.find("admin") != string::npos || code.find("root") != string::npos || code.find("12345") != string::npos) {
+            vulnerabilities.push_back("Trapdoor detected!");
+            suggestions += "- Avoid hardcoded credentials. Use proper auth libraries.\n";
+        } else {
+            cout << "✅ No trapdoor detected.\n";
+        }
+    }
+
+    void commandInjectionTest() {
+        string input;
+        cout << "\n[Command Injection Check]\nEnter command input: ";
+        getline(cin, input);
+
+        if (input.find(";") != string::npos || input.find("&&") != string::npos || input.find("|") != string::npos) {
+            vulnerabilities.push_back("Command injection risk detected!");
+            suggestions += "- Sanitize inputs before passing to system calls.\n";
+        } else {
+            cout << "✅ No command injection detected.\n";
+        }
+    }
+
+    void passwordTest() {
+        string pwd;
+        cout << "\n[Weak Password Check]\nEnter a password: ";
+        getline(cin, pwd);
+
+        if (pwd.length() < 6 || pwd == "123456" || pwd == "password" || pwd == "admin") {
+            vulnerabilities.push_back("Weak password detected!");
+            suggestions += "- Use strong passwords (length > 8, symbols, digits).\n";
+        } else {
+            cout << "✅ Password looks strong.\n";
+        }
+    }
+
+    void printResults() {
+        cout << "\n=== Scan Results ===\n";
+        if (vulnerabilities.empty()) {
+            cout << "No vulnerabilities found.\n";
+        } else {
+            for (auto& v : vulnerabilities) {
+                cout << "- " << v << endl;
+            }
+            if (!suggestions.empty()) {
+                cout << "\nSuggestions:\n" << suggestions;
+            }
+        }
+    }
+};
+
+int main() {
+    VulnerabilityDetector vd;
+    vd.menu();
+    return 0;
+}
